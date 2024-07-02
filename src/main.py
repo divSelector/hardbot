@@ -1,28 +1,44 @@
 import os
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
+ADMIN_ROLE_NAME = 'admin'
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-class MyClient(discord.Client):
-    def __init__(self, *, intents):
-        super().__init__(intents=intents)
-        self.target_channel_id = DISCORD_CHANNEL_ID
+bot = commands.Bot(command_prefix='!', intents=intents)
 
-    async def on_ready(self):
-        print(f'Logged on as {self.user}')
+@bot.event
+async def on_ready():
+    print(f'Logged on as {bot.user}')
 
-    async def on_message(self, message):
+
+@bot.event
+async def on_message(message):
+    if message.channel.id == DISCORD_CHANNEL_ID and message.author != bot.user:
         msg = "This server is locked up pretty tight. Just be patient and someone will let you into the main channel. " \
-             + "If you have any questions or concerns you can DM nobody_goeshard -- Thanks for your interest in the site."
-        if message.channel.id == self.target_channel_id and message.author != self.user:
-            await message.channel.send(f'Hello! {msg}')
+              + "If you have any questions or concerns you can DM nobody_goeshard -- Thanks for your interest in the site."
+        await message.channel.send(f'Hello! {msg}')
+    
+    await bot.process_commands(message)
 
-client = MyClient(intents=intents)
-client.run(DISCORD_BOT_TOKEN)
+
+@bot.command(name='delete')
+@commands.has_role(ADMIN_ROLE_NAME)
+async def delete_messages(ctx, number_of_messages: int):
+    deleted = await ctx.channel.purge(limit=number_of_messages + 1)
+    await ctx.send(f'Deleted {len(deleted)-1} messages', delete_after=5)
+
+
+@delete_messages.error
+async def delete_messages_error(ctx, error):
+    if isinstance(error, commands.MissingRole):
+        await ctx.send('You do not have the required role to use this command.', delete_after=5)
+
+bot.run(DISCORD_BOT_TOKEN)
