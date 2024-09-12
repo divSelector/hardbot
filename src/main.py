@@ -23,7 +23,7 @@ async def on_ready():
 async def on_message(message):
     if message.channel.id == DISCORD_CHANNEL_ID and message.author != bot.user:
         msg = "This server is locked up pretty tight. Just be patient and someone will let you into the main channel. " \
-              + "If you have any questions or concerns you can DM nobody_goeshard -- Thanks for your interest in the site."
+              + "If you have any questions or concerns you can DM an admin -- Thanks for your interest in the site."
         await message.channel.send(f'Hello! {msg}')
     
     await bot.process_commands(message)
