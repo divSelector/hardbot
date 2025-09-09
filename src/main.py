@@ -7,7 +7,7 @@ load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
-ADMIN_ROLE_NAME = 'admin'
+ADMIN_ROLE_NAME = 'owner'
 
 intents = discord.Intents.default()
 intents.message_content = True
