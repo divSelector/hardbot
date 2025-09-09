@@ -19,14 +19,14 @@ async def on_ready():
     print(f'Logged on as {bot.user}')
 
 
-@bot.event
-async def on_message(message):
-    if message.channel.id == DISCORD_CHANNEL_ID and message.author != bot.user:
-        msg = "This server is locked up pretty tight. Just be patient and someone will let you into the main channel. " \
-              + "If you have any questions or concerns you can DM an admin -- Thanks for your interest in the site."
-        await message.channel.send(f'Hello! {msg}')
+# @bot.event
+# async def on_message(message):
+#     if message.channel.id == DISCORD_CHANNEL_ID and message.author != bot.user:
+#         msg = "This server is locked up pretty tight. Just be patient and someone will let you into the main channel. " \
+#               + "If you have any questions or concerns you can DM an admin -- Thanks for your interest in the site."
+#         await message.channel.send(f'Hello! {msg}')
     
-    await bot.process_commands(message)
+#     await bot.process_commands(message)
 
 
 @bot.command(name='delete')
