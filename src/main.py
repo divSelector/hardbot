@@ -101,4 +101,58 @@ async def delete_messages_error(ctx, error):
         await ctx.send('You do not have the required role to use this command.', delete_after=5)
 
 
+
+ROLE_MANAGERS = ["admin"]          # Users with this role can run the command
+PROTECTED_ROLES = ["owner", "admin"]        # Roles that cannot be modified
+TOGGLE_ROLES = ["member", "goeshard gang", ""]  # Roles that can be toggled
+
+@bot.command(name="role")
+async def toggle_roles(ctx, *args):
+    """
+    Usage: !role @Role1 @Role2 ... @User
+    Toggles all listed roles on the target user.
+    """
+    # Check caller has Role Manager role
+    if not any(r.name in ROLE_MANAGERS for r in ctx.author.roles):
+        await ctx.send("❌ You don't have permission to use this command.", delete_after=5)
+        return
+
+    # Separate mentions
+    members = [arg for arg in args if ctx.guild.get_member_named(arg.strip("@"))]  # crude check
+    roles = [arg for arg in args if arg.startswith("<@&") and arg.endswith(">")]
+
+    # Simpler: require last argument to be a member mention
+    if not args or not ctx.message.mentions:
+        await ctx.send("❌ Usage: `!role @Role1 @Role2 ... @User`", delete_after=5)
+        return
+
+    target_member = ctx.message.mentions[-1]
+
+    # Prevent protected members
+    if any(protected in [r.name for r in target_member.roles] for protected in PROTECTED_ROLES):
+        await ctx.send(f"❌ You cannot modify roles for {target_member.mention} because they are protected.", delete_after=5)
+        return
+
+    toggled_roles = []
+    for role in ctx.message.role_mentions:
+        if role.name not in TOGGLE_ROLES:
+            continue  # skip non-whitelisted roles
+
+        try:
+            if role in target_member.roles:
+                await target_member.remove_roles(role, reason=f"Toggled by {ctx.author}")
+                toggled_roles.append(f"Removed `{role.name}`")
+            else:
+                await target_member.add_roles(role, reason=f"Toggled by {ctx.author}")
+                toggled_roles.append(f"Added `{role.name}`")
+        except discord.Forbidden:
+            await ctx.send(f"❌ I don't have permission to manage the role `{role.name}`.", delete_after=5)
+
+    if toggled_roles:
+        await ctx.send(f"✅ {', '.join(toggled_roles)} for {target_member.mention}.", delete_after=5)
+    else:
+        await ctx.send("⚠️ No roles were modified.", delete_after=5)
+
+
+
 bot.run(DISCORD_BOT_TOKEN)
