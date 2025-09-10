@@ -12,6 +12,7 @@ OWNER_ROLE_NAME = 'owner'
 ADMIN_ROLE_NAME = 'admin'
 LOG_CHANNEL_NAME = 'log'
 BOT_CHANNEL_NAME = 'bot'
+MEMBER_ROLE_NAME = 'member'
 
 DISBOARD_BOT_ID = 302050872383242240  # Official Disboard bot ID
 
@@ -102,57 +103,26 @@ async def delete_messages_error(ctx, error):
 
 
 
-ROLE_MANAGERS = ["admin"]          # Users with this role can run the command
-PROTECTED_ROLES = ["owner", "admin"]        # Roles that cannot be modified
-TOGGLE_ROLES = ["member", "goeshard gang", ""]  # Roles that can be toggled
-
-@bot.command(name="role")
-async def toggle_roles(ctx, *args):
-    """
-    Usage: !role @Role1 @Role2 ... @User
-    Toggles all listed roles on the target user.
-    """
-    # Check caller has Role Manager role
-    if not any(r.name in ROLE_MANAGERS for r in ctx.author.roles):
-        await ctx.send("❌ You don't have permission to use this command.", delete_after=5)
+@bot.command(name="accept")
+@commands.has_role(ADMIN_ROLE_NAME)
+async def accept_member(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.send("❌ Usage: `!accept @User`", delete_after=5)
         return
 
-    # Separate mentions
-    members = [arg for arg in args if ctx.guild.get_member_named(arg.strip("@"))]  # crude check
-    roles = [arg for arg in args if arg.startswith("<@&") and arg.endswith(">")]
-
-    # Simpler: require last argument to be a member mention
-    if not args or not ctx.message.mentions:
-        await ctx.send("❌ Usage: `!role @Role1 @Role2 ... @User`", delete_after=5)
+    role = discord.utils.get(ctx.guild.roles, name=MEMBER_ROLE_NAME)
+    if not role:
+        await ctx.send(f"❌ '{MEMBER_ROLE_NAME}' role does not exist.", delete_after=5)
         return
 
-    target_member = ctx.message.mentions[-1]
-
-    # Prevent protected members
-    if any(protected in [r.name for r in target_member.roles] for protected in PROTECTED_ROLES):
-        await ctx.send(f"❌ You cannot modify roles for {target_member.mention} because they are protected.", delete_after=5)
+    if role in member.roles:
+        await ctx.send(f"⚠️ {member.mention} already has the {MEMBER_ROLE_NAME} role.", delete_after=5)
         return
 
-    toggled_roles = []
-    for role in ctx.message.role_mentions:
-        if role.name not in TOGGLE_ROLES:
-            continue  # skip non-whitelisted roles
-
-        try:
-            if role in target_member.roles:
-                await target_member.remove_roles(role, reason=f"Toggled by {ctx.author}")
-                toggled_roles.append(f"Removed `{role.name}`")
-            else:
-                await target_member.add_roles(role, reason=f"Toggled by {ctx.author}")
-                toggled_roles.append(f"Added `{role.name}`")
-        except discord.Forbidden:
-            await ctx.send(f"❌ I don't have permission to manage the role `{role.name}`.", delete_after=5)
-
-    if toggled_roles:
-        await ctx.send(f"✅ {', '.join(toggled_roles)} for {target_member.mention}.", delete_after=5)
-    else:
-        await ctx.send("⚠️ No roles were modified.", delete_after=5)
-
-
+    try:
+        await member.add_roles(role, reason=f"Accepted by {ctx.author}")
+        await ctx.send(f"✅ {member.mention} has been given the {MEMBER_ROLE_NAME} role.", delete_after=5)
+    except discord.Forbidden:
+        await ctx.send("❌ I don't have permission to add this role.", delete_after=5)
 
 bot.run(DISCORD_BOT_TOKEN)
