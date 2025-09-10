@@ -107,22 +107,22 @@ async def delete_messages_error(ctx, error):
 @commands.has_role(ADMIN_ROLE_NAME)
 async def accept_member(ctx, member: discord.Member = None):
     if not member:
-        await ctx.send("❌ Usage: `!accept @User`", delete_after=5)
+        await ctx.send("❌ Usage: `!accept @User`")
         return
 
     role = discord.utils.get(ctx.guild.roles, name=MEMBER_ROLE_NAME)
     if not role:
-        await ctx.send(f"❌ '{MEMBER_ROLE_NAME}' role does not exist.", delete_after=5)
+        await ctx.send(f"❌ '{MEMBER_ROLE_NAME}' role does not exist.")
         return
 
     if role in member.roles:
-        await ctx.send(f"⚠️ {member.mention} already has the {MEMBER_ROLE_NAME} role.", delete_after=5)
+        await ctx.send(f"⚠️ {member.mention} already has the {MEMBER_ROLE_NAME} role.")
         return
 
     try:
         await member.add_roles(role, reason=f"Accepted by {ctx.author}")
-        await ctx.send(f"✅ {member.mention} has been given the {MEMBER_ROLE_NAME} role.", delete_after=5)
+        await ctx.send(f"✅ {member.mention} has been given the {MEMBER_ROLE_NAME} role.")
     except discord.Forbidden:
-        await ctx.send("❌ I don't have permission to add this role.", delete_after=5)
+        await ctx.send("❌ I don't have permission to add this role.")
 
 bot.run(DISCORD_BOT_TOKEN)
