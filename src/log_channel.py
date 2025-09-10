@@ -2,8 +2,7 @@ import discord
 from types import SimpleNamespace
 
 
-LOG_CHANNEL_NAME = 'log'
-
+from constants import channel_ids
 
 colors = SimpleNamespace(
     new=discord.Color.blue(),
@@ -45,7 +44,7 @@ def get_log_channel(message: discord.Message):
     """Return the log channel if available, else None. Skip bots."""
     if message.author.bot:
         return None
-    return discord.utils.get(message.guild.text_channels, name=LOG_CHANNEL_NAME)
+    return discord.utils.get(message.guild.text_channels, id=channel_ids.admin_log)
 
 
 async def log_create(message):

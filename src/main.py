@@ -5,15 +5,11 @@ from dotenv import load_dotenv
 
 from log_channel import log_create, log_delete, log_edit
 from disboard_bump import handle_bump
+from constants import role_ids
 
 load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
-
-OWNER_ROLE_NAME = 'owner'
-ADMIN_ROLE_NAME = 'admin'
-MEMBER_ROLE_NAME = 'member'
 
 
 intents = discord.Intents.default()
@@ -48,7 +44,7 @@ async def on_ready():
 
 
 @bot.command(name='delete')
-@commands.has_role(OWNER_ROLE_NAME)
+@commands.has_role(role_ids.owner)
 async def delete_messages(ctx, number_of_messages: int):
     deleted = await ctx.channel.purge(limit=number_of_messages + 1)
     await ctx.send(f'Deleted {len(deleted)-1} messages', delete_after=5)
@@ -61,25 +57,25 @@ async def delete_messages_error(ctx, error):
 
 
 @bot.command(name="accept")
-@commands.has_role(ADMIN_ROLE_NAME)
+@commands.has_role(role_ids.admin)
 async def accept_member(ctx, member: discord.Member = None):
     if not member:
         await ctx.send("❌ Usage: `!accept @User`")
         return
 
-    role = discord.utils.get(ctx.guild.roles, name=MEMBER_ROLE_NAME)
+    role = discord.utils.get(ctx.guild.roles, id=role_ids.member)
     if not role:
-        await ctx.send(f"❌ '{MEMBER_ROLE_NAME}' role does not exist.")
+        await ctx.send(f"❌ '{role_ids.member}' role does not exist.")
         return
 
     if role in member.roles:
-        await ctx.send(f"⚠️ {member.mention} already has the {MEMBER_ROLE_NAME} role.")
+        await ctx.send(f"⚠️ {member.mention} already has the {role.name} role.")
         return
 
     try:
         await member.add_roles(role, reason=f"Accepted by {ctx.author}")
-        await ctx.send(f"✅ {member.mention} has been given the {MEMBER_ROLE_NAME} role.")
+        await ctx.send(f"✅ {member.mention} has been given the {role.name} role.")
     except discord.Forbidden:
-        await ctx.send("❌ I don't have permission to add this role.")
+        await ctx.send("❌ No permission to add this role.")
 
 bot.run(DISCORD_BOT_TOKEN)

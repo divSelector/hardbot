@@ -12,15 +12,14 @@ https://disboard.org/server/1248815078581735437
 """
 
 import discord
+from constants import channel_ids
 
-
-BOT_CHANNEL_NAME = 'bot'
 DISBOARD_BOT_ID = 302050872383242240
-
 
 async def handle_bump(message):
     """Handle /bump and disboard messages in the bot channel"""
-    if message.channel.name != BOT_CHANNEL_NAME:
+
+    if message.channel.id != channel_ids.bot_commands:
         return
 
     if message.content.strip().lower() == "/bump" and not message.author.bot:
