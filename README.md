@@ -50,7 +50,7 @@ DISCORD_BOT_TOKEN=whatever123long456
     On Windows: `venv\Scripts\activate`
     on Linux: `source venv/bin/activate`
 - Install the dependencies: `pip install -r requirements.txt`
-- Run the Bot: `python src/main.py`
+- Run the Bot: `python src/bot.py`
 
 When it says something like `Logged on as MyHardbot#7929` Your test bot will be online.
 
