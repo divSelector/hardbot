@@ -8,7 +8,7 @@ Join us at [this.goeshard.org/discord](https://this.goeshard.org/discord)
 
 ### Create a Test Server From Our Template
 
-- Get the current template link, use it to create a new server from the template. https://discord.new/aWG2QJFURMPB
+- Get the current template link, use it to create a new server from the template. https://discord.new/JyDf6cNbZz9h
 - Now you have the server, but you need to register a bot with discord before you can use it in your server template. 
 
 ### Configure a Discord Bot Account for Your Test Bot
