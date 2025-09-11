@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 
 channel_names = SimpleNamespace(
-    system_channel="welcome",
+    system_channel="pool",
     bot_commands="bot",
     admin_log="log"
 )
