@@ -4,7 +4,7 @@ from discord.ext import commands
 from mixins import CommonCogMixin
 import requests
 from bs4 import BeautifulSoup
-
+import time
 
 class Neocities(commands.Cog, CommonCogMixin):
     """
@@ -21,7 +21,8 @@ class Neocities(commands.Cog, CommonCogMixin):
     @neocities.command(name="get")
     async def neocities_get(self, ctx, username: str):
         base_url = "https://neocities.org"
-        url = base_url + '/site/' + username
+        cache_bust = f"?t={int(time.time())}"
+        url = base_url + '/site/' + username + cache_bust
         
         try:
             response = requests.get(url, allow_redirects=False, timeout=5)
@@ -64,7 +65,7 @@ class Neocities(commands.Cog, CommonCogMixin):
 
             embed = discord.Embed(
                 title=f"Latest update for {username} on Neocities",
-                description=f"[Click here to open]({file_url})",
+                description=f"[Open {username}'s page on Neocities]({file_url})",
                 color=discord.Color.blue()
             )
             embed.set_image(url=img_url)
