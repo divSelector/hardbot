@@ -17,6 +17,7 @@ bot_extensions = [
     "cogs.logging",
     "cogs.administration",
     "cogs.disboard",
+    "cogs.neocities",
 ]
 
 async def main():
