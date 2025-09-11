@@ -64,7 +64,7 @@ class Neocities(commands.Cog, CommonCogMixin):
 
             embed = discord.Embed(
                 title=f"Latest update for {username} on Neocities",
-                description=f"[{file_url}]({file_url})",
+                description=f"[Click here to open]({file_url})",
                 color=discord.Color.blue()
             )
             embed.set_image(url=img_url)
