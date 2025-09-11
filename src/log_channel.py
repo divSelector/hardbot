@@ -2,14 +2,13 @@ import discord
 from types import SimpleNamespace
 
 
-from constants import channel_ids
+from constants import channel_names
 
 colors = SimpleNamespace(
     new=discord.Color.blue(),
     edited=discord.Color.orange(),
     deleted=discord.Color.red()
 )
-
 
 def create_base_embed(title: str, color: discord.Color, message: discord.Message):
     """Create a base embed with common fields from a message."""
@@ -44,7 +43,7 @@ def get_log_channel(message: discord.Message):
     """Return the log channel if available, else None. Skip bots."""
     if message.author.bot:
         return None
-    return discord.utils.get(message.guild.text_channels, id=channel_ids.admin_log)
+    return discord.utils.get(message.guild.text_channels, name=channel_names.admin_log)
 
 
 async def log_create(message):

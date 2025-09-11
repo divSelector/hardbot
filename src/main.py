@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from log_channel import log_create, log_delete, log_edit
 from disboard_bump import handle_bump
-from constants import role_ids
+from constants import role_names
 
 load_dotenv()
 
@@ -16,6 +16,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
+
 
 
 @bot.event
@@ -42,9 +43,8 @@ async def on_ready():
     print(f'Logged on as {bot.user}')
 
 
-
 @bot.command(name='delete')
-@commands.has_role(role_ids.owner)
+@commands.has_role(role_names.owner)
 async def delete_messages(ctx, number_of_messages: int):
     deleted = await ctx.channel.purge(limit=number_of_messages + 1)
     await ctx.send(f'Deleted {len(deleted)-1} messages', delete_after=5)
@@ -57,15 +57,15 @@ async def delete_messages_error(ctx, error):
 
 
 @bot.command(name="accept")
-@commands.has_role(role_ids.admin)
+@commands.has_role(role_names.admin)
 async def accept_member(ctx, member: discord.Member = None):
     if not member:
         await ctx.send("❌ Usage: `!accept @User`")
         return
 
-    role = discord.utils.get(ctx.guild.roles, id=role_ids.member)
+    role = discord.utils.get(ctx.guild.roles, name=role_names.member)
     if not role:
-        await ctx.send(f"❌ '{role_ids.member}' role does not exist.")
+        await ctx.send(f"❌ '{role_names.member}' role does not exist.")
         return
 
     if role in member.roles:
