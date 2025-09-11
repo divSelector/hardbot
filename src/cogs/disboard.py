@@ -14,17 +14,16 @@ https://disboard.org/server/1248815078581735437
 import discord
 from constants import channel_names
 from discord.ext import commands
-
+from mixins import CommonCogMixin
 
 DISBOARD_BOT_ID = 302050872383242240
 
 
-class Disboard(commands.Cog):
+class Disboard(commands.Cog, CommonCogMixin):
     """
     Handle Disboard Bumping
     """
     def __init__(self, bot):
-        self.name = "Disboard"
         self.bot = bot
 
     async def handle_bump(self, message):
@@ -50,10 +49,6 @@ class Disboard(commands.Cog):
         Fired when a message is created
         """
         await self.handle_bump(message)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.name} cog ready as {self.bot.user}")
 
 
 async def setup(bot):

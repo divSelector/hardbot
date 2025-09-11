@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from types import SimpleNamespace
 from constants import channel_names
+from mixins import CommonCogMixin
 
 colors = SimpleNamespace(
     new=discord.Color.blue(),
@@ -9,15 +10,14 @@ colors = SimpleNamespace(
     deleted=discord.Color.red()
 )
 
-class Logging(commands.Cog):
+class Logging(commands.Cog, CommonCogMixin):
     """
     Log created, edited, and deleted messages to specific log channel.
     """
     def __init__(self, bot):
-        self.name = "Logging"
         self.bot = bot
 
-    # HELPER FUNCTIONS
+    # HELPER METHODS
 
     def create_base_embed(self, title: str, color: discord.Color, message: discord.Message):
         """
@@ -58,7 +58,7 @@ class Logging(commands.Cog):
         return discord.utils.get(message.guild.text_channels, name=channel_names.admin_log)
 
 
-    # LOGGING FUNCTIONS
+    # LOGGING METHODS
 
     async def log_create(self, message):
         """
@@ -96,7 +96,7 @@ class Logging(commands.Cog):
         await channel.send(embed=embed)
 
 
-    # LIFECYCLE FUNCTIONS
+    # EVENT LISTENERS
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -123,10 +123,6 @@ class Logging(commands.Cog):
         Fired when a message is deleted
         """
         await self.log_delete(message)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.name} cog ready as {self.bot.user}")
 
 
 async def setup(bot):

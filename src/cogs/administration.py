@@ -1,14 +1,15 @@
 import discord
 from discord.ext import commands
 from constants import role_names
+from mixins import CommonCogMixin
 
-class Administration(commands.Cog):
+
+class Administration(commands.Cog, CommonCogMixin):
     """
     Commands to make admin lives easier and provision abilities to mods without
     giving sweeping permissions.
     """
     def __init__(self, bot):
-        self.name = "Administration"
         self.bot = bot
 
     @commands.command(name="delete")
@@ -46,10 +47,6 @@ class Administration(commands.Cog):
             await ctx.send(f"✅ {member.mention} has been given the {role.name} role.")
         except discord.Forbidden:
             await ctx.send("❌ No permission to add this role. Try moving your HARDBOT role up in the role hierarchy")
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.name} cog ready as {self.bot.user}")
 
 
 async def setup(bot):
