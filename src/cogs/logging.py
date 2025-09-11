@@ -122,6 +122,8 @@ class Logging(commands.Cog, CommonCogMixin):
         """
         Fired when a message is deleted
         """
+        if message.author.bot:
+            return
         await self.log_delete(message)
 
 
