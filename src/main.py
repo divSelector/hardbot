@@ -29,8 +29,12 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
+from pprint import pprint
+
 @bot.event
 async def on_message_edit(before, after):
+    if before.content == after.content:
+        return
     await log_edit(before, after)
 
 
