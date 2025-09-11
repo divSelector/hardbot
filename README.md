@@ -18,11 +18,12 @@ Join us at [this.goeshard.org/discord](https://this.goeshard.org/discord)
 - Click `Installation` tab and set the settings like in the picture, then copy the Install link and go there.
 
 insert pic 1
+![1](images/1.png)
 
 - It's very important the `Administrator` permission is given or the bot won't be able to do anything.
 - Accept, accept. Your bot user should be in your template server but it will be offline.
 
-insert pic 2
+![2](images/2.png)
 
 ### Configure the Bot Code to Your Test Bot Account
 
