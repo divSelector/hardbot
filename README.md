@@ -2,7 +2,7 @@
 
 Community discord bot at hardcord.
 
-Join us at [this.goeshard.org/discord](https://this.goeshard.org/discord)
+Join us at [this.goeshard.org/discord](https://this.goeshard.org/discord) or [discord.com/invite/bkh2rbuPjc](https://discord.com/invite/bkh2rbuPjc)
 
 ## Instructions to contribute: 
 
