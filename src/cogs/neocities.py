@@ -5,6 +5,7 @@ from mixins import CommonCogMixin
 import requests
 from bs4 import BeautifulSoup
 import time
+import re
 
 class Neocities(commands.Cog, CommonCogMixin):
     """
@@ -75,6 +76,54 @@ class Neocities(commands.Cog, CommonCogMixin):
         else:
             await ctx.send(f"⚠️ Unexpected status {response.status_code} for {username}")
 
+
+    @neocities.command(name="random")
+    async def neocities_random(self, ctx, optional_tag: str = ""):
+        base_url = "https://neocities.org/browse?sort_by=random&tag="
+        alphanumeric_tag = re.sub(r'[^a-zA-Z0-9]', '', optional_tag)
+        cache_bust = f"&t={int(time.time())}"
+        url = base_url + alphanumeric_tag + cache_bust
+
+        try:
+            response = requests.get(url, allow_redirects=False, timeout=5)
+        except requests.RequestException as e:
+            print(f"❌ Error fetching site: {e}")
+            return
+        
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "html.parser")
+            website_gallery = soup.find(class_="website-Gallery")
+            if not website_gallery:
+                await ctx.send(f"❌ Failed to locate website-Gallery element on page.")
+
+        first_li = website_gallery.find("li")
+        if not first_li:
+            await ctx.send("❌ No website found.")
+            return
+        
+        a_tag = first_li.find("a", class_="neo-Screen-Shot")
+        href = a_tag["href"]
+        title = a_tag["title"]
+
+        style = first_li.find("span", class_="img-Holder")["style"]
+        screenshot_url = "https://neocities.org" + re.search(r'url\((.*?)\)', style).group(1)
+
+        tags = [t.get_text(strip=True) for t in first_li.select(".site-tags a")]
+        tags_str = ", ".join(tags)
+
+        print(href, title, screenshot_url, tags_str)
+        embed = discord.Embed(
+            title=f"Found a random site on neocities{f" in #{optional_tag}!" if optional_tag else "!"}",
+            description=(
+                f"**Title:** [{title}]({href})\n"
+                f"**URL:** {href}\n"
+                f"**Tags:** {tags_str if tags_str else 'None'}"
+            ),
+            color=discord.Color.blue()
+        )
+        embed.set_image(url=screenshot_url)
+
+        await ctx.send(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(Neocities(bot))
