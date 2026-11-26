@@ -26,12 +26,12 @@ class Administration(commands.Cog, CommonCogMixin):
 
     @commands.command(name="nottalkingabout")
     @commands.has_any_role(role_names.can_embed)
-    async def not_talking_about(self, ctx, text: str):
+    async def not_talking_about(self, ctx, *, text: str):
         """
         chxshire macro
-        Example: !nottalkingabout a stupid example
+        Example: !nottalkingabout a stupid example about blah blah
         """
-        msg = "i am obviously not talking about *{text}*, you retard. to you, i wish stage 4 cock cancer."
+        msg = f"i am obviously not talking about **{text}**, you retard. to you, i wish stage 4 cock cancer."
         await ctx.send(msg)
 
     @commands.command(name="embed")
